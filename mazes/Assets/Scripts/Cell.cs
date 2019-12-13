@@ -33,9 +33,9 @@ public class Cell : MonoBehaviour
             cell.unlink(gameObject.GetComponent<Cell>(), false);
     }
 
-    public Dictionary<Cell, bool>.KeyCollection getLinks() // returns the cells that are linked
+    public Dictionary<Cell, bool> getLinks() // returns the cells that are linked
     {
-        return links.Keys;
+        return links;
     }
 
     public bool isLinked(Cell cell) // returns if the given cell is linked to the current cell
@@ -60,8 +60,8 @@ public class Cell : MonoBehaviour
         switch(side) {
             case 0 : y += offset; q = new Quaternion(0, 0, turn, 1); name = "north"; break; // north
             case 1 : x += offset; name = "east"; break; // east
-            case 2 : y += -offset; q = new Quaternion(0, 0, turn, 1); name = "south"; break; // south
-            case 3 : x += -offset; name = "west"; break; // west
+            case 2 : y -= offset; q = new Quaternion(0, 0, turn, 1); name = "south"; break; // south
+            case 3 : x -= offset; name = "west"; break; // west
         }
         Instantiate(go, new Vector2(x, y), q, transform).name = name;
     }

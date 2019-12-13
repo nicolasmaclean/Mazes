@@ -4,7 +4,10 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - wall: {fileID: 7024667116141403779, guid: c1b16c0b6c629924da35818bb50e77df, type: 3}
+  - cellPrefab: {fileID: 5838130317353243109, guid: 742d1faf48f989b4392bbd3d53fe510e,
+      type: 3}
+  - wallPrefab: {fileID: 7974812571019379838, guid: 45dbb09e682f0d147bb35d6148f40acf,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

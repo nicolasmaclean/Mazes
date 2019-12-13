@@ -4,6 +4,7 @@ using UnityEngine;
 public class MazeGenerator : MonoBehaviour
 {
     // public Enum generationAlgorithm = { binaryTree };
+    public bool autoUpdate;
     public static System.Random random = new System.Random();
     public Cell[,] maze;
     public GameObject cellPrefab;
@@ -11,16 +12,31 @@ public class MazeGenerator : MonoBehaviour
     public static float wallWidth { get; set; }
     public static float wallLength { get; set; }
     public int width;
-    public int height;
+    public int height; // add editor scripts
 
     void Start()
     {
+        generateMaze();
+        // Distances dist = new Distances(maze[0, 0], maze);
+        // Debug.Log(dist.toString());
+    }
+
+    public void deleteMaze()
+    {
+        for(int i = transform.childCount-1; i >= 0; i--)
+            DestroyImmediate(transform.GetChild(i).gameObject);
+    }
+
+    public void generateMaze()
+    {
+        deleteMaze();
         maze = new Cell[height, width];
         wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
-        wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y;
+        wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
         prepareGrid();
         configureCells();
-        BinaryTree.generate(maze);
+        // generationAlgorithms.BinaryTree(maze);
+        generationAlgorithms.SideWinder(maze);
         to3d();
     }
 
@@ -28,7 +44,8 @@ public class MazeGenerator : MonoBehaviour
     {
         for(int y = 0; y < height; y++)
             for(int x = 0; x < width; x++) {
-                maze[y, x] = Instantiate(cellPrefab, new Vector2(x * wallLength, y * wallLength), new Quaternion(0, 0, 0, 1), gameObject.transform).GetComponent<Cell>();
+                
+                maze[y, x] = Instantiate(cellPrefab, new Vector2(x * wallLength, y * wallLength), new Quaternion(-1f, 0, 0, 1), gameObject.transform).GetComponent<Cell>();
                 maze[y, x].initialize(x, y);
                 maze[y, x].gameObject.name = "Cell " + (y * height + x);
             }
@@ -66,13 +83,6 @@ public class MazeGenerator : MonoBehaviour
     {
         return width*height;
     }
-
-    // public void eachCell(Action action)
-    // {
-    //     for(int y = 0; y < height; y++)
-    //         for(int x = 0; x < width; x++)
-    //             action(maze[y, x].GetComponent<Cell>());
-    // }
 
     public String toString() // an ascii art version of the maze
     { // the font in Unity's console has uneven widths of character, so this doesn't work

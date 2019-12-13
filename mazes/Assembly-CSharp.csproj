@@ -45,8 +45,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\BinaryTree.cs" />
+     <Compile Include="Assets\Editor Scripts\MazeEditor.cs" />
      <Compile Include="Assets\Scripts\Cell.cs" />
+     <Compile Include="Assets\Scripts\Distances.cs" />
+     <Compile Include="Assets\Scripts\generationAlgorithms.cs" />
      <Compile Include="Assets\Scripts\MazeGenerator.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Users/nicol/Documents/GitHub/Mazes/mazes/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
