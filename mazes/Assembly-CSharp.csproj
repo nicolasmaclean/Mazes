@@ -45,15 +45,17 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\cameraZoom.cs" />
      <Compile Include="Assets\Scripts\Cell.cs" />
-     <Compile Include="Assets\Scripts\ColorHuePicker.cs" />
-     <Compile Include="Assets\Scripts\ColorIndicator.cs" />
-     <Compile Include="Assets\Scripts\ColorSaturationBrightnessPicker.cs" />
-     <Compile Include="Assets\Scripts\Draggable.cs" />
-     <Compile Include="Assets\Scripts\ExampleColorReceiver.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\ColorHuePicker.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\ColorIndicator.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\ColorSaturationBrightnessPicker.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\Draggable.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\ExampleColorReceiver.cs" />
+     <Compile Include="Assets\Scripts\Color Picker\HSBColor.cs" />
      <Compile Include="Assets\Scripts\GenerationAlgorithms.cs" />
-     <Compile Include="Assets\Scripts\HSBColor.cs" />
      <Compile Include="Assets\Scripts\MazeGenerator.cs" />
+     <Compile Include="Assets\Scripts\SolutionAlgorithms.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
      <None Include="Assets\Shaders\ColorHue.shader" />
      <None Include="Assets\Shaders\ColorSaturationBrightness.shader" />

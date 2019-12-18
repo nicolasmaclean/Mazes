@@ -7,15 +7,15 @@ public class MapGeneratorEditor : Editor {
 
 	public override void OnInspectorGUI() {
 		MazeGenerator mazeGen = (MazeGenerator)target;
-
-		if (DrawDefaultInspector ()) {
-			if (mazeGen.autoUpdate) {
-				mazeGen.generateMaze();
-			}
-		}
+		
+		DrawDefaultInspector();
 
 		if (GUILayout.Button ("Generate")) {
 			mazeGen.generateMaze();
+		}
+
+		if (GUILayout.Button ("Solve")) {
+			mazeGen.solveMaze();
 		}
 
 		if (GUILayout.Button ("Delete")) {

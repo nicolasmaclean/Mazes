@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
@@ -9,11 +10,17 @@ public class MazeGenerator : MonoBehaviour
 
     public bool autoUpdate;
     public int generationNum;
-    public Cell[,] maze;
+    public int solutionNum;
     public GameObject cellPrefab;
     public GameObject wallPrefab;
+    public Material material;
     public int width;
     public int height;
+
+    public Cell[,] maze;
+    public int[,] distances;
+    public Cell root;
+    public Cell goal;
 
     public void deleteMaze()
     {
@@ -25,6 +32,8 @@ public class MazeGenerator : MonoBehaviour
     {
         deleteMaze();
 
+        // width = cameraZoom.width;
+        // height = cameraZoom.height;
         maze = new Cell[height, width];
         wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
         wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
@@ -37,7 +46,20 @@ public class MazeGenerator : MonoBehaviour
             case 1 : GenerationAlgorithms.SideWinder(maze); break;
         }
 
+        root = maze[0, 0];
+        goal = maze[maze.GetLength(0)-1, maze.GetLength(1)-1];
+
         to3d();
+    }
+
+    public void solveMaze()
+    {
+        switch(solutionNum) {
+            case 0 : distances = SolutionAlgorithms.Dijkstra(maze, root); break;
+        }
+
+        showPath();
+        // colorMaze();
     }
 
     void prepareGrid()
@@ -47,7 +69,7 @@ public class MazeGenerator : MonoBehaviour
                 
                 maze[y, x] = Instantiate(cellPrefab, new Vector2(x * wallLength, y * wallLength), new Quaternion(-1f, 0, 0, 1), gameObject.transform).GetComponent<Cell>();
                 maze[y, x].initialize(x, y);
-                maze[y, x].gameObject.name = "Cell " + (y * height + x);
+                maze[y, x].gameObject.name = "Cell " + (y * width + x);
             }
     }
 
@@ -111,7 +133,7 @@ public class MazeGenerator : MonoBehaviour
         return output;
     }
 
-    public void to3d()
+    void to3d()
     {
         for(int y = height-1; y >= 0; y--)
             for(int x = 0; x < width; x++) {
@@ -127,5 +149,26 @@ public class MazeGenerator : MonoBehaviour
                 if(!cur.isLinked(cur.south)) // south walls
                     cur.makeWall(2, wallPrefab);
             }
+    }
+
+    void showPath()
+    {
+        List<Cell> path = SolutionAlgorithms.getPath(distances, goal);
+
+        String line = "";
+        for(int i = distances.GetLength(0)-1; i >= 0; i--) {
+            for(int j = 0; j < distances.GetLength(1); j++)
+                line += distances[i, j] + " ";
+            Debug.Log(line); line = "";
+        }
+
+        foreach(Cell cur in path) {
+            cur.gameObject.GetComponent<Renderer>().material = material;
+        }
+    } 
+    
+    void colorMaze()
+    {
+
     }
 }
