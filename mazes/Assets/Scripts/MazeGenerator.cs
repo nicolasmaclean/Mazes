@@ -3,23 +3,17 @@ using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
 {
-    // public Enum generationAlgorithm = { binaryTree };
-    public bool autoUpdate;
     public static System.Random random = new System.Random();
+    public static float wallWidth { get; set; }
+    public static float wallLength { get; set; }
+
+    public bool autoUpdate;
+    public int generationNum;
     public Cell[,] maze;
     public GameObject cellPrefab;
     public GameObject wallPrefab;
-    public static float wallWidth { get; set; }
-    public static float wallLength { get; set; }
     public int width;
-    public int height; // add editor scripts
-
-    void Start()
-    {
-        generateMaze();
-        // Distances dist = new Distances(maze[0, 0], maze);
-        // Debug.Log(dist.toString());
-    }
+    public int height;
 
     public void deleteMaze()
     {
@@ -30,13 +24,19 @@ public class MazeGenerator : MonoBehaviour
     public void generateMaze()
     {
         deleteMaze();
+
         maze = new Cell[height, width];
         wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
         wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
+
         prepareGrid();
         configureCells();
-        // generationAlgorithms.BinaryTree(maze);
-        generationAlgorithms.SideWinder(maze);
+
+        switch(generationNum) {
+            case 0 : GenerationAlgorithms.BinaryTree(maze); break;
+            case 1 : GenerationAlgorithms.SideWinder(maze); break;
+        }
+
         to3d();
     }
 

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public static class generationAlgorithms
+public static class GenerationAlgorithms
 {
     public static void BinaryTree(Cell[,] maze)
     {
