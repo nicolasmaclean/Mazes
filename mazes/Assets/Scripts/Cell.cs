@@ -38,6 +38,15 @@ public class Cell : MonoBehaviour
         return links;
     }
 
+    public bool hasLinks()
+    {
+        bool anyLinks = false;
+        foreach(var item in links)
+            if(item.Value)
+                anyLinks = true;
+        return anyLinks;
+    }
+
     public bool isLinked(Cell cell) // returns if the given cell is linked to the current cell
     {
         bool val = false;
@@ -46,10 +55,20 @@ public class Cell : MonoBehaviour
         return val;
     }
 
-    public List<Cell> neighbors() // this is incomplete
+    public List<Cell> getNeighbors()
     {
         List<Cell> neighbors = new List<Cell>();
+        if(east != null) neighbors.Add(east);
+        if(north != null) neighbors.Add(north);
+        if(south != null) neighbors.Add(south);
+        if(west != null) neighbors.Add(west);
         return neighbors;
+    }
+
+    public Cell getRandomNeighbor()
+    {
+        List<Cell> neighbors = getNeighbors();
+        return neighbors[MazeGenerator.random.Next(neighbors.Count)];
     }
 
     public void makeWall(int side, GameObject go)

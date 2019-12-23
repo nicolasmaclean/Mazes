@@ -44,6 +44,8 @@ public class MazeGenerator : MonoBehaviour
         switch(generationNum) {
             case 0 : GenerationAlgorithms.BinaryTree(maze); break;
             case 1 : GenerationAlgorithms.SideWinder(maze); break;
+            case 2 : GenerationAlgorithms.AldousBroder(maze, getRandomCell(), getMazeSize()); break;
+            case 3 : GenerationAlgorithms.Wilson(maze); break;
         }
 
         root = maze[0, 0];
@@ -55,11 +57,9 @@ public class MazeGenerator : MonoBehaviour
     public void solveMaze()
     {
         switch(solutionNum) {
-            case 0 : distances = SolutionAlgorithms.Dijkstra(maze, root); break;
+            case 0 : distances = SolutionAlgorithms.Dijkstra(maze, root); colorMaze(); break;
+            case 1 : distances = SolutionAlgorithms.Tremaux(maze, root, goal); showPath(); break;
         }
-
-        showPath();
-        // colorMaze();
     }
 
     void prepareGrid()
@@ -155,20 +155,23 @@ public class MazeGenerator : MonoBehaviour
     {
         List<Cell> path = SolutionAlgorithms.getPath(distances, goal);
 
-        String line = "";
-        for(int i = distances.GetLength(0)-1; i >= 0; i--) {
-            for(int j = 0; j < distances.GetLength(1); j++)
-                line += distances[i, j] + " ";
-            Debug.Log(line); line = "";
-        }
-
         foreach(Cell cur in path) {
-            cur.gameObject.GetComponent<Renderer>().material = material;
+            cur.transform.Find("Floor").GetComponent<Renderer>().material = material;
         }
     } 
     
     void colorMaze()
     {
+        List<Cell> path = SolutionAlgorithms.getLongestPath(maze, distances);
+        goal = path[0]; root = path[path.Count-1];
 
+        Cell furthestCell = SolutionAlgorithms.getMax(maze, distances);
+        int furthestDist = distances[(int)furthestCell.y, (int)furthestCell.x];
+
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                maze[y, x].transform.Find("Floor").GetComponent<Renderer>().material.color = Color.Lerp(Color.white, material.color, (float)distances[y, x] / furthestDist);
+            }
+        }
     }
 }
