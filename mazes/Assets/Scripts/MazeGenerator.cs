@@ -14,13 +14,16 @@ public class MazeGenerator : MonoBehaviour
     public GameObject cellPrefab;
     public GameObject wallPrefab;
     public Material material;
-    public int width;
-    public int height;
+    public int width; public int height;
 
     public Cell[,] maze;
     public int[,] distances;
-    public Cell root;
-    public Cell goal;
+    public Cell root; public Cell goal;
+
+    void Start()
+    {
+        generateMaze();    
+    }
 
     public void deleteMaze()
     {
@@ -46,6 +49,7 @@ public class MazeGenerator : MonoBehaviour
             case 1 : GenerationAlgorithms.SideWinder(maze); break;
             case 2 : GenerationAlgorithms.AldousBroder(maze, getRandomCell(), getMazeSize()); break;
             case 3 : GenerationAlgorithms.Wilson(maze); break;
+            case 4 : GenerationAlgorithms.HuntAndKill(maze, getRandomCell()); break;
         }
 
         root = maze[0, 0];
@@ -60,6 +64,33 @@ public class MazeGenerator : MonoBehaviour
             case 0 : distances = SolutionAlgorithms.Dijkstra(maze, root); colorMaze(); break;
             case 1 : distances = SolutionAlgorithms.Tremaux(maze, root, goal); showPath(); break;
         }
+    }
+
+    public String toString() // an ascii art version of the maze
+    { // the font in Unity's console has uneven widths of character, so this doesn't work
+        String body = "   "; String corner = "+";
+        String wall = "|"; String floor ="---";
+
+        String output = "+";
+        for(int i = 0; i < width; i++)
+            output += "---+";
+        output += "\n";
+
+        for(int y = height - 1; y >= 0; y--) {
+            String top = wall; // The middle row text of a cell
+            String bottom ="+"; // the bottom row text of a cell
+            for(int x = 0; x < width; x++) {
+                Cell cur = maze[y, x];
+
+                String east = cur.isLinked(cur.east) ? " " : wall;
+                top = top + body + east;
+
+                String south = cur.isLinked(cur.south) ? body : floor;
+                bottom += south + corner;
+            }
+            output += top + "\n" + bottom + "\n";
+        }
+        return output;
     }
 
     void prepareGrid()
@@ -96,6 +127,18 @@ public class MazeGenerator : MonoBehaviour
             }     
     }
 
+    public List<Cell> deadends()
+    {
+        List<Cell> list = new List<Cell>();
+
+        for(int y = 0; y < height; y++)
+            for(int x = 0; x < width; x++)
+                if(maze[y, x].getLinkCount() == 1)
+                    list.Add(maze[y, x]);
+
+        return list;
+    }
+
     Cell getRandomCell()
     {
         return maze[random.Next(height), random.Next(width)];
@@ -104,33 +147,6 @@ public class MazeGenerator : MonoBehaviour
     int getMazeSize()
     {
         return width*height;
-    }
-
-    public String toString() // an ascii art version of the maze
-    { // the font in Unity's console has uneven widths of character, so this doesn't work
-        String body = "   "; String corner = "+";
-        String wall = "|"; String floor ="---";
-
-        String output = "+";
-        for(int i = 0; i < width; i++)
-            output += "---+";
-        output += "\n";
-
-        for(int y = height - 1; y >= 0; y--) {
-            String top = wall; // The middle row text of a cell
-            String bottom ="+"; // the bottom row text of a cell
-            for(int x = 0; x < width; x++) {
-                Cell cur = maze[y, x];
-
-                String east = cur.isLinked(cur.east) ? " " : wall;
-                top = top + body + east;
-
-                String south = cur.isLinked(cur.south) ? body : floor;
-                bottom += south + corner;
-            }
-            output += top + "\n" + bottom + "\n";
-        }
-        return output;
     }
 
     void to3d()

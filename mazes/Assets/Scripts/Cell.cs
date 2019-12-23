@@ -38,6 +38,14 @@ public class Cell : MonoBehaviour
         return links;
     }
 
+    public int getLinkCount()
+    {
+        int num = 0;
+        foreach(var item in links)
+            if(item.Value) num++;
+        return num;
+    }
+
     public bool hasLinks()
     {
         bool anyLinks = false;
@@ -62,6 +70,16 @@ public class Cell : MonoBehaviour
         if(north != null) neighbors.Add(north);
         if(south != null) neighbors.Add(south);
         if(west != null) neighbors.Add(west);
+        return neighbors;
+    }
+
+    public List<Cell> getNeighborsLink(bool link)
+    {
+        List<Cell> neighbors = new List<Cell>();
+        if(east != null && east.hasLinks() == link) neighbors.Add(east);
+        if(north != null && north.hasLinks() == link) neighbors.Add(north);
+        if(south != null && south.hasLinks() == link) neighbors.Add(south);
+        if(west != null && west.hasLinks() == link) neighbors.Add(west);
         return neighbors;
     }
 

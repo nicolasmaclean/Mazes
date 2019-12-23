@@ -113,4 +113,34 @@ public static class GenerationAlgorithms
             }
         }
     }
+
+    public static void HuntAndKill(Cell[,] maze, Cell root)
+    {
+        Cell cur = root;
+
+        while(cur) {
+            List<Cell> unvisitedNeighbors = cur.getNeighborsLink(false);
+
+            if(unvisitedNeighbors.Count > 0) {
+                Cell neighbor = unvisitedNeighbors[MazeGenerator.random.Next(unvisitedNeighbors.Count)];
+                cur.link(neighbor, true);
+                cur = neighbor;
+            } else {
+                cur = null;
+
+                for(int y = maze.GetLength(0)-1; y >= 0; y--)
+                    for(int x = 0; x < maze.GetLength(1); x++) {
+                        List<Cell> visitedNeighbors = maze[y, x].getNeighborsLink(true);
+                        if(!maze[y, x].hasLinks() && visitedNeighbors.Count > 0) {
+                            cur = maze[y, x];
+
+                            Cell neighbor = visitedNeighbors[MazeGenerator.random.Next(visitedNeighbors.Count)];
+                            cur.link(neighbor, true);
+
+                            break;
+                        }
+                    }
+            }
+        }
+    }
 }
