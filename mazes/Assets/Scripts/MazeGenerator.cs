@@ -35,8 +35,7 @@ public class MazeGenerator : MonoBehaviour
     {
         deleteMaze();
 
-        // width = cameraZoom.width;
-        // height = cameraZoom.height;
+        // width = cameraZoom.width; height = cameraZoom.height;
         maze = new Cell[height, width];
         wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
         wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
@@ -50,6 +49,7 @@ public class MazeGenerator : MonoBehaviour
             case 2 : GenerationAlgorithms.AldousBroder(maze, getRandomCell(), getMazeSize()); break;
             case 3 : GenerationAlgorithms.Wilson(maze); break;
             case 4 : GenerationAlgorithms.HuntAndKill(maze, getRandomCell()); break;
+            case 5 : GenerationAlgorithms.RecursiveBacktracker(maze, getRandomCell()); break;
         }
 
         root = maze[0, 0];

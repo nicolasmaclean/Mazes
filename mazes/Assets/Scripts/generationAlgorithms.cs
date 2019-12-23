@@ -143,4 +143,23 @@ public static class GenerationAlgorithms
             }
         }
     }
+
+    public static void RecursiveBacktracker(Cell[,] maze, Cell root)
+    {
+        Stack<Cell> stack = new Stack<Cell>();
+        stack.Push(root);
+
+        while(stack.Count > 0) {
+            Cell cur = stack.Peek();
+            List<Cell> neighbors = cur.getNeighborsLink(false);
+
+            if(neighbors.Count == 0) {
+                stack.Pop();
+            } else {
+                Cell neighbor = neighbors[MazeGenerator.random.Next(neighbors.Count)];
+                cur.link(neighbor, true);
+                stack.Push(neighbor);
+            }
+        }
+    }
 }
