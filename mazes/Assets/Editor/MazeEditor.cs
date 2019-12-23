@@ -11,7 +11,7 @@ public class MapGeneratorEditor : Editor {
 		DrawDefaultInspector();
 
 		if (GUILayout.Button ("Generate")) {
-			mazeGen.generateMaze();
+			mazeGen.generateMaze(false);
 		}
 
 		if (GUILayout.Button ("Solve")) {
@@ -20,6 +20,10 @@ public class MapGeneratorEditor : Editor {
 
 		if (GUILayout.Button ("Delete")) {
 			mazeGen.deleteMaze();
+		}
+
+		if (GUILayout.Button ("Generate Braided")) {
+			mazeGen.generateMaze(true);
 		}
 	}
 }

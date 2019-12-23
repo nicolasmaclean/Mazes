@@ -11,6 +11,7 @@ public class MazeGenerator : MonoBehaviour
     public bool autoUpdate;
     public int generationNum;
     public int solutionNum;
+    public float p;
     public GameObject cellPrefab;
     public GameObject wallPrefab;
     public Material material;
@@ -22,7 +23,9 @@ public class MazeGenerator : MonoBehaviour
 
     void Start()
     {
-        generateMaze();    
+        wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
+        wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
+        generateMaze(false);    
     }
 
     public void deleteMaze()
@@ -31,14 +34,13 @@ public class MazeGenerator : MonoBehaviour
             DestroyImmediate(transform.GetChild(i).gameObject);
     }
 
-    public void generateMaze()
+    public void generateMaze(bool b)
     {
         deleteMaze();
 
         // width = cameraZoom.width; height = cameraZoom.height;
+
         maze = new Cell[height, width];
-        wallWidth = wallPrefab.GetComponent<Renderer>().bounds.size.x;
-        wallLength = wallPrefab.GetComponent<Renderer>().bounds.size.y; // + wallWidth; do this and make a corner to fill gaps
 
         prepareGrid();
         configureCells();
@@ -55,6 +57,8 @@ public class MazeGenerator : MonoBehaviour
         root = maze[0, 0];
         goal = maze[maze.GetLength(0)-1, maze.GetLength(1)-1];
 
+        if(b) braid(p);
+
         to3d();
     }
 
@@ -62,7 +66,7 @@ public class MazeGenerator : MonoBehaviour
     {
         switch(solutionNum) {
             case 0 : distances = SolutionAlgorithms.Dijkstra(maze, root); colorMaze(); break;
-            case 1 : distances = SolutionAlgorithms.Tremaux(maze, root, goal); showPath(); break;
+            case 1 : showPath(); break;
         }
     }
 
@@ -91,6 +95,18 @@ public class MazeGenerator : MonoBehaviour
             output += top + "\n" + bottom + "\n";
         }
         return output;
+    }
+
+    public List<Cell> getDeadends()
+    {
+        List<Cell> list = new List<Cell>();
+
+        for(int y = 0; y < height; y++)
+            for(int x = 0; x < width; x++)
+                if(maze[y, x].getLinkCount() == 1)
+                    list.Add(maze[y, x]);
+
+        return list;
     }
 
     void prepareGrid()
@@ -127,16 +143,23 @@ public class MazeGenerator : MonoBehaviour
             }     
     }
 
-    public List<Cell> deadends()
+    void braid(float p)
     {
-        List<Cell> list = new List<Cell>();
+        List<Cell> deadends = getDeadends();
+        foreach(Cell cur in deadends) {
+            if(cur.getLinkCount() != 1 && random.NextDouble() > p) break;
 
-        for(int y = 0; y < height; y++)
-            for(int x = 0; x < width; x++)
-                if(maze[y, x].getLinkCount() == 1)
-                    list.Add(maze[y, x]);
+            List<Cell> neighbors = cur.getNeighbors();
+            List<Cell> best = new List<Cell>();
+            foreach(Cell cell in neighbors)
+                if(cell.getLinkCount() == 1)
+                    best.Add(cell);
 
-        return list;
+            if(best.Count == 0)
+            best = neighbors;
+
+            cur.link(best[random.Next(best.Count)], true);
+        }
     }
 
     Cell getRandomCell()
@@ -169,7 +192,7 @@ public class MazeGenerator : MonoBehaviour
 
     void showPath()
     {
-        List<Cell> path = SolutionAlgorithms.getPath(distances, goal);
+        List<Cell> path = SolutionAlgorithms.Tremaux(maze, root, goal);
 
         foreach(Cell cur in path) {
             cur.transform.Find("Floor").GetComponent<Renderer>().material = material;

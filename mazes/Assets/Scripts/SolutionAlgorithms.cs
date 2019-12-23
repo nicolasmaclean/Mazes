@@ -26,13 +26,16 @@ public static class SolutionAlgorithms
         return distances;
     }
 
-    public static int[,] Tremaux(Cell[,] maze, Cell root, Cell goal)
+    public static List<Cell> Tremaux(Cell[,] maze, Cell root, Cell goal)
     {
-        int[,] distances = new int[maze.GetLength(0), maze.GetLength(1)];
+        List<Cell> path = new List<Cell>();
+        Cell cur = root; path.Add(cur);
 
+        while(cur != goal) {
+            cur = goal;            
+        }
 
-
-        return distances;
+        return path;
     }
 
     public static List<Cell> getPath(int[,] distances, Cell goal)
