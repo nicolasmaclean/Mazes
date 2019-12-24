@@ -22,14 +22,14 @@ public class Cell : MonoBehaviour
     public void link(Cell cell, bool bidi) // links cell neighbors
     {
         links[cell] = true;
-        if(bidi)
+        if(bidi && cell != null)
             cell.link(this, false);
     }
 
     public void unlink(Cell cell, bool bidi) // unlinks cell neighbors
     {
         links[cell] = false;
-        if(bidi)
+        if(bidi && cell != null)
             cell.unlink(gameObject.GetComponent<Cell>(), false);
     }
 

@@ -822,6 +822,16 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Recursive Backtracker
       m_Image: {fileID: 0}
+    - m_Text: Simplified Prim
+      m_Image: {fileID: 0}
+    - m_Text: True Prim
+      m_Image: {fileID: 0}
+    - m_Text: Growing Tree Mix
+      m_Image: {fileID: 0}
+    - m_Text: Eller
+      m_Image: {fileID: 0}
+    - m_Text: Recursive Division
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2259,7 +2269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  generationNum: 0
+  generationNum: 8
   solutionNum: 0
   p: 0
   cellPrefab: {fileID: 5838130317353243109, guid: 742d1faf48f989b4392bbd3d53fe510e,

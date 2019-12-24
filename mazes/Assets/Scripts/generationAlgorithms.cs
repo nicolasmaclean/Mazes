@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System;
 using UnityEngine;
 
 public static class GenerationAlgorithms
@@ -161,5 +163,101 @@ public static class GenerationAlgorithms
                 stack.Push(neighbor);
             }
         }
+    }
+
+    public static void SimplePrim(Cell[,] maze, Cell root, Func<List<Cell>, Cell> selection)
+    {
+        List<Cell> active = new List<Cell>();
+        active.Add(root);
+
+        while(active.Count > 0) {
+            Cell cur = selection(active);
+            List<Cell> availableNeighbors = cur.getNeighborsLink(false);
+
+            if(availableNeighbors.Count > 0) {
+                Cell neighbor = availableNeighbors[MazeGenerator.random.Next(availableNeighbors.Count)];
+                cur.link(neighbor, true);
+                active.Add(neighbor);
+            } else {
+                active.Remove(cur);
+            }
+        }
+    }
+
+    public static void TruePrim(Cell[,] maze, Cell root)
+    {
+        List<Cell> active = new List<Cell>();
+        active.Add(root);
+
+        int[,] costs = new int[maze.GetLength(0), maze.GetLength(1)];
+        for(int y = 0; y < maze.GetLength(0); y++)
+            for(int x = 0; x < maze.GetLength(1); x++)
+                costs[y, x] = MazeGenerator.random.Next(100);
+
+        while(active.Count > 0) {
+            Cell cur = active.Aggregate( (a, b) => costs[a.y, a.x] < costs[b.y, b.x] ? a : b);
+            List<Cell> availableNeighbors = cur.getNeighborsLink(false);
+
+            if(availableNeighbors.Count > 0) {
+                Cell neighbor = availableNeighbors.Aggregate( (a, b) => costs[a.y, a.x] < costs[b.y, b.x] ? a : b);
+                cur.link(neighbor, true);
+                active.Add(neighbor);
+            } else {
+                active.Remove(cur);
+            }
+        }
+    }
+
+    public static void Eller(Cell[,] maze)
+    {
+
+    }
+
+    public static void RecursiveDivision(Cell[,] maze)
+    {
+        for(int y = 0; y < maze.GetLength(0); y++)
+            for(int x = 0; x < maze.GetLength(1); x++)
+                foreach(Cell cell in maze[y, x].getNeighbors())
+                    maze[y, x].link(cell, false);
+
+        divide(maze, 0, 0, maze.GetLength(0), maze.GetLength(1));
+    }
+
+    static void divide(Cell[,] maze, int row, int col, int height, int width)
+    {
+        if(height <= 1 || width <=1) return;
+
+        if(height > width)
+            divideHorizontally(maze, row, col, height, width);
+        if(height < width)
+            divideVertically(maze, row, col, height, width);
+    }
+
+    static void divideHorizontally(Cell[,] maze, int row, int col, int height, int width)
+    {
+        int divideSouthOf = MazeGenerator.random.Next(height-1);
+        int passageAt = MazeGenerator.random.Next(width);
+
+        for(int i = 0; i < width; i++)
+            if(passageAt != i) {
+                Cell cur = maze[row+divideSouthOf, col+i];
+                cur.unlink(cur.south, true);
+            }
+        divide(maze, row, col, divideSouthOf+1, width);
+        divide(maze, row+divideSouthOf+1, col, height-divideSouthOf-1, width);
+    }
+
+    static void divideVertically(Cell[,] maze, int row, int col, int height, int width)
+    {
+        int divideEastOf = MazeGenerator.random.Next(width-1);
+        int passageAt = MazeGenerator.random.Next(height);
+
+        for(int i = 0; i < height; i++)
+            if(passageAt != i) {
+                Cell cur = maze[row+i, col+divideEastOf];
+                cur.unlink(cur.east, true);
+            }
+        divide(maze, row, col, height, divideEastOf+1);
+        divide(maze, row, col+divideEastOf+1, height, width-divideEastOf-1);
     }
 }

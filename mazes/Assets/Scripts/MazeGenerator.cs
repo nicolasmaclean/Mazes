@@ -52,6 +52,11 @@ public class MazeGenerator : MonoBehaviour
             case 3 : GenerationAlgorithms.Wilson(maze); break;
             case 4 : GenerationAlgorithms.HuntAndKill(maze, getRandomCell()); break;
             case 5 : GenerationAlgorithms.RecursiveBacktracker(maze, getRandomCell()); break;
+            case 6 : GenerationAlgorithms.SimplePrim(maze, getRandomCell(), list => list[MazeGenerator.random.Next(list.Count)]); break;
+            case 7 : GenerationAlgorithms.TruePrim(maze, getRandomCell()); break;
+            case 8 : GenerationAlgorithms.SimplePrim(maze, getRandomCell(), list => MazeGenerator.random.Next(2) < 1 ? list[MazeGenerator.random.Next(list.Count)] : list[list.Count-1]); break;
+            case 9 : GenerationAlgorithms.Eller(maze); break;
+            case 10 : GenerationAlgorithms.RecursiveDivision(maze); break;
         }
 
         root = maze[0, 0];
